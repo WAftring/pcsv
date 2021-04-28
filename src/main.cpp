@@ -49,8 +49,7 @@ int main(int argc, char *argv[])
 
     if((g_Flags & HELP) == HELP)
     {
-        //TODO finish this
-        std::cout << "pcsv.exe [-t][][-i:#] CSVFile" << std::endl;
+        std::cout << "pcsv.exe [-t][-i:#] CSVFile" << std::endl;
         std::cout << "\nDESCRIPTION:" << std::endl;
         std::cout << "\tParses CSV files for specific columns and prints the output to the console.NOTE: File must end in .csv" << std::endl;
         std::cout << "\nOPTIONS:" << std::endl;
@@ -59,7 +58,6 @@ int main(int argc, char *argv[])
         goto Exit;
     }
 
-    //TODO add logic for max number of indecies
     if(csvfile.is_open())
     {
 
@@ -79,7 +77,7 @@ int main(int argc, char *argv[])
 
         if(g_Flags & HEADER)
         {
-            std::cout << g_Filename << "header: " << std::endl;
+            std::cout << g_Filename << " header: " << std::endl;
             std::cout << line << std::endl;
         }
         else
@@ -160,7 +158,13 @@ bool ParseArgs(int argc, char* argv[])
 
     g_Filename = argv[argc - 1];
     dwFileInfo = GetFileAttributes(g_Filename.c_str()); 
-    if(dwFileInfo == INVALID_FILE_ATTRIBUTES || (dwFileInfo & FILE_ATTRIBUTE_DIRECTORY) == FILE_ATTRIBUTE_DIRECTORY || g_Filename.substr(g_Filename.length() - 3) != ".csv")
+    if(g_Filename.length() < 4)
+    {
+        std::cout << "Invalid file";
+        ret = false;
+        goto Exit;
+    }
+    if(dwFileInfo == INVALID_FILE_ATTRIBUTES || (dwFileInfo & FILE_ATTRIBUTE_DIRECTORY) == FILE_ATTRIBUTE_DIRECTORY || g_Filename.substr(g_Filename.length() - 4, 4) != ".csv")
     {
         std::cout << "Invalid file"; 
         ret = false;
